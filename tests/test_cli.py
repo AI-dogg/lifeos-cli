@@ -20,12 +20,16 @@ class CliTests(unittest.TestCase):
         code, output = self.run_cli("help")
 
         self.assertEqual(code, 0)
-        self.assertIn("LifeOS Growth Passport CLI", output)
-        self.assertIn("personal growth passport", output)
-        self.assertIn("Command map:", output)
-        self.assertIn("Dimensions:", output)
-        self.assertIn("Asset kinds:", output)
+        self.assertIn("LifeOS 成长护照", output)
+        self.assertIn("个人成长护照", output)
+        self.assertIn("常用记录：", output)
+        self.assertIn("怎么选择：", output)
         self.assertNotIn("LifeOS CLI 第一版", output)
+        self.assertNotIn("https://106.55.134.110", output)
+        self.assertNotIn("LIFEOS_CLI_BASE_URL", output)
+        self.assertNotIn("fieldErrors", output)
+        self.assertNotIn("schema", output.lower())
+        self.assertNotIn("token", output.lower())
 
     def test_schema_is_json_and_ok(self) -> None:
         code, output = self.run_cli("schema")

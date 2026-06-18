@@ -34,89 +34,57 @@ _AUTHENTICATED_COMMANDS = {
     "action.done",
     "score.get",
 }
-HELP_TEXT = """LifeOS Growth Passport CLI
+HELP_TEXT = """LifeOS 成长护照
 
-Use `lifeos` to record and read a personal growth passport:
-plans, completed actions, stable facts, profile signals, reusable assets,
-scores, and snapshots. The CLI defaults to https://106.55.134.110/lifeos.
+把计划、行动、目标、复盘、成果和重要经历记录到你的个人成长护照里。
+你可以自己用命令记录，也可以让 AI 助手帮你记录。
 
-Quick start:
+第一次使用：
   lifeos register --name "你的名字" --password "你的密码"
   lifeos diagnose
+
+常用记录：
   lifeos snapshot
+      查看当前成长护照快照
 
-Usage:
-  lifeos help
-  lifeos configure --base-url https://lifeos.example.com --name "你的名字"
-  lifeos register --name "你的名字" --password "你的密码"
-  lifeos login --name "你的名字" --password "你的密码"
-  lifeos schema
-  lifeos snapshot [--user USER_ID | --name NAME]
-  lifeos plan save --date 2026-06-18 --action "09:00|写计划" --action "10:30|测试 CLI"
-  lifeos plan get --date 2026-06-18
-  lifeos plan draft get --date 2026-06-18
-  lifeos plan draft update --action-id ACTION_ID --time "11:00" --action "更新后的行动"
-  lifeos plan confirm --date 2026-06-18
-  lifeos plan history --limit 30
-  lifeos action list --date 2026-06-18
-  lifeos action update --action-id ACTION_ID --status pending
-  lifeos action done --action-id ACTION_ID --text "完成证据"
-  lifeos score get
-  lifeos fact add --dimension work_output --statement "发布了成长护照 CLI 第一版"
-  lifeos asset add --kind work_asset --title "成长护照 CLI" --summary "用于沉淀个人成长数据的命令行工具"
-  lifeos asset list
-  lifeos profile capture --dimension life_stage --statement "2026 年主线是建设个人成长护照"
-  lifeos profile get
-  lifeos assets backfill
-  lifeos diagnose
-
-Command map:
-  plan              未来某天要做的计划；save 保存草稿，confirm 确认到行动层
-  action            已确认计划里的行动；list 查询，update 修改，done 记录完成证据
-  fact              稳定事实、成长里程碑、长期记忆
-  profile capture   人生阶段、长期目标、关键决定、里程碑、认知记录
-  asset             可复用成果、方法、资源、经验、关系沉淀
-  snapshot          读取当前成长护照快照
-
-Identity:
-  LIFEOS_USER_ID       已有用户 id；设置后可省略 --user
-  LIFEOS_USER_TOKEN    当前用户 token；注册/登录后自动写入本机配置
-  LIFEOS_USER_NAME     当前账号名；用于 register/login
-  LIFEOS_NAME          LIFEOS_USER_NAME 的简写别名
-  LIFEOS_PASSWORD      忘记 token 时可临时用于 login，不会写入配置
-  ~/.lifeos/cli.env    安装后的持久配置文件
-
-API:
-  LIFEOS_CLI_BASE_URL  你的云端 LifeOS API 地址；默认连接 https://106.55.134.110/lifeos
-  LIFEOS_CLI_INSECURE_TLS  允许自签 HTTPS 证书；当前默认开启，建议正式域名证书上线后关闭
-
-Dimensions:
-  life_stage, long_term_goal, key_decision, milestone,
-  action_completion, sleep, exercise, diet,
-  cognitive_record, work_output, relationship_interaction
-
-Asset kinds:
-  cognitive_asset, method_asset, work_asset,
-  relationship_asset, experience_asset, resource_asset
-
-Examples:
-  lifeos configure --base-url "https://lifeos.example.com" --name "Li"
-  lifeos register --password "strong-password"
-  lifeos login --password "strong-password"
   lifeos plan save --date 2026-06-18 --action "09:00|写今日计划" --action "11:00|复盘成长记录"
-  lifeos plan confirm --date 2026-06-18
-  lifeos action done --action-id ACTION_ID --text "已完成并验证结果"
-  lifeos score get
-  lifeos fact add --dimension long_term_goal --statement "未来三年持续建设个人成长系统"
-  lifeos asset add --kind method_asset --title "每日复盘流程" --summary "用于沉淀计划、行动和成长证据"
-  lifeos snapshot
+      保存某一天的计划
 
-Rules:
-  1. 只是讨论、草稿或假设计划时不要写入；用户明确要记录/保存/沉淀时再写。
-  2. 每天要执行的事情用 plan/action，不要只写 fact。
-  3. 长期事实、画像信号和可复用成果分别用 fact/profile/asset。
-  4. action done 会写完成证据，并可能触发打卡/评分；只在用户确实完成行动时使用。
-  5. CLI 输出 JSON；只有 "ok": true 才算成功。失败时看 code、message、fieldErrors。
+  lifeos plan confirm --date 2026-06-18
+      确认计划，进入行动清单
+
+  lifeos action list --date 2026-06-18
+      查看当天行动
+
+  lifeos action done --action-id ACTION_ID --text "已完成并验证结果"
+      记录某个行动已经完成
+
+  lifeos fact add --dimension long_term_goal --statement "未来三年持续建设个人成长系统"
+      记录长期目标、里程碑、重要事实
+
+  lifeos profile capture --dimension life_stage --statement "我正在从执行者转向产品负责人"
+      记录人生阶段、关键决定、长期目标、认知变化
+
+  lifeos asset add --kind method_asset --title "每日复盘流程" --summary "用于沉淀计划、行动和成长证据"
+      记录可复用的成果、方法、资源或经验
+
+怎么选择：
+  未来要做的事       用 plan
+  已经确认的行动     用 action
+  长期事实和里程碑   用 fact
+  人生阶段和目标     用 profile
+  可复用成果和方法   用 asset
+  查看已有信息       用 snapshot
+
+账号：
+  换设备或登录信息丢失时，用：
+    lifeos login --name "你的名字" --password "你的密码"
+
+提醒：
+  只是讨论、草稿、假设计划时不要记录。
+  明确要记录、保存、沉淀时再写入成长护照。
+  action done 表示真的完成了一个行动，不要随便使用。
+  看到 ok: true 就表示记录成功。
 """
 
 

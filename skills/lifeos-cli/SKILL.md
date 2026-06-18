@@ -207,6 +207,7 @@ If `fieldErrors` includes identity fields together with command fields, collect 
 - Do not write secrets, raw tokens, private keys, or passwords into LifeOS.
 - Ask before recording sensitive personal information.
 - Do not write to LifeOS when the user only asks for advice, a draft, or a hypothetical plan.
+- Keep user-facing language consumer-friendly: say "成长护照、计划、行动、目标、成果、复盘" instead of exposing `dimension`, `kind`, `fieldErrors`, API URLs, tokens, or schema details unless the user explicitly asks for technical detail.
 - Prefer `plan` and `action` for daily execution; do not store daily todos only as facts.
 - Prefer `fact`, `profile`, and `asset` for durable memory that should affect future context.
 - If a command fails with auth errors, ask the user to run `lifeos login` or provide credentials for login.
