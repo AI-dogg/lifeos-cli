@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lifeos-cli"
+version = "0.1.0"
+description = "Open-source command line client for LifeOS."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "LifeOS Contributors" },
+]
+keywords = ["lifeos", "cli", "productivity", "api-client"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/AI-dogg/lifeos-cli"
+Repository = "https://github.com/AI-dogg/lifeos-cli"
+Issues = "https://github.com/AI-dogg/lifeos-cli/issues"
+
+[project.scripts]
+lifeos = "lifeos_cli.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lifeos_cli"]
