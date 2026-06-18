@@ -46,6 +46,13 @@ lifeos configure --base-url "https://example.com/lifeos" --name "User Name"
 
 The default server currently uses a temporary self-signed HTTPS certificate, and the CLI allows it by default. Prefer a real domain and certificate for production.
 
+If a command fails because identity is missing:
+
+- If the user has not registered, ask for a display name and password, then run `lifeos register --name "..." --password "..."`.
+- If the user already has an account, ask for the account name and password, then run `lifeos login --name "..." --password "..."`.
+- If only `lifeos` is missing, install the CLI first instead of asking for account details.
+- Do not print or store passwords outside the CLI command/config flow.
+
 ## Command Selection
 
 Use `lifeos fact add` for stable personal facts, growth milestones, and long-term memory:
@@ -54,11 +61,23 @@ Use `lifeos fact add` for stable personal facts, growth milestones, and long-ter
 lifeos fact add --dimension work_output --statement "Published the first version of my growth passport CLI."
 ```
 
+If required details are missing:
+
+- Missing `dimension`: infer a likely dimension only when obvious; otherwise ask whether it is `life_stage`, `long_term_goal`, `key_decision`, `milestone`, `action_completion`, `sleep`, `exercise`, `diet`, `cognitive_record`, `work_output`, or `relationship_interaction`.
+- Missing `statement`: ask the user for the exact fact to remember in one sentence.
+- Sensitive or private fact: ask for confirmation before recording.
+
 Use `lifeos profile capture` for profile-shaping signals such as life stage, long-term goals, key decisions, milestones, and cognitive records:
 
 ```bash
 lifeos profile capture --dimension long_term_goal --statement "Build a durable personal growth passport."
 ```
+
+If required details are missing:
+
+- Missing `dimension`: ask which profile signal this is: `life_stage`, `long_term_goal`, `key_decision`, `milestone`, or `cognitive_record`.
+- Missing `statement`: ask for the profile signal in the user's own words.
+- If the content is only a temporary task, use `plan` or `action` instead of `profile capture`.
 
 Use plan commands for things the user intends to do on a date:
 
@@ -69,6 +88,13 @@ lifeos plan get --date YYYY-MM-DD
 lifeos plan history --limit 30
 ```
 
+If required details are missing:
+
+- Missing date: ask for the target date; if the user says today/tomorrow, resolve it to `YYYY-MM-DD` before calling the CLI.
+- Missing actions for `plan save`: ask for the action list and times. If times are not known, ask whether to use rough slots.
+- Missing confirmation intent: save the draft first, then ask whether to run `lifeos plan confirm --date YYYY-MM-DD`.
+- User asks to view a plan without a date: ask for a date, or use today's exact date only when that is clearly intended.
+
 Use action commands for planned task execution:
 
 ```bash
@@ -77,6 +103,13 @@ lifeos action update --action-id ACTION_ID --status pending
 lifeos action done --action-id ACTION_ID --text "Completed and verified."
 ```
 
+If required details are missing:
+
+- Missing `action-id`: run `lifeos action list --date YYYY-MM-DD` first, then choose the matching action if unambiguous; otherwise ask the user to pick.
+- Missing date for action lookup: ask for the date, or use today's exact date only when the user is clearly discussing today.
+- Missing completion evidence for `action done`: ask what was completed or what proof/result should be recorded.
+- Missing status for `action update`: ask whether the status should be `pending`, `done`, or `skipped`.
+
 Use asset commands for outputs, methods, resources, and reusable growth artifacts:
 
 ```bash
@@ -84,6 +117,13 @@ lifeos asset add --kind work_asset --title "Growth Passport CLI" --summary "A co
 lifeos asset list
 lifeos assets backfill
 ```
+
+If required details are missing:
+
+- Missing `kind`: ask which asset type fits: `cognitive_asset`, `method_asset`, `work_asset`, `relationship_asset`, `experience_asset`, or `resource_asset`.
+- Missing `title`: ask for a short title.
+- Missing `summary` and no `from-fact-id`: ask for a concise summary of the artifact or outcome.
+- User asks to list assets without a limit: use `lifeos asset list` first; add `--limit` only when the user asks for a bounded list.
 
 Use read commands to inspect state:
 
@@ -94,6 +134,22 @@ lifeos score get
 lifeos schema
 ```
 
+If read commands fail or lack context:
+
+- Missing identity: follow the identity recovery flow above.
+- Snapshot too broad: ask which area, date range, or dimension the user wants, then rerun with filters when supported.
+- Need command details: run `lifeos help` or `lifeos schema`.
+
+## Failure Handling
+
+When a command returns JSON with `"ok": false`, inspect `code`, `message`, and `fieldErrors`.
+
+- `validation_error`: ask only for the fields named in `fieldErrors`, then rerun the command.
+- `auth_or_not_found`: run `lifeos login` if credentials are available; otherwise ask the user to log in or provide account credentials.
+- `config_error`: run `lifeos diagnose`; if base URL is missing or wrong, run `lifeos configure --base-url "..."`.
+- `storage_or_http_error`: retry once only if `retryable` is true; otherwise report the message and ask whether to continue later.
+- `unexpected_error`: report the message briefly and avoid repeating the same command without changing inputs.
+
 ## Operating Rules
 
 - Treat CLI output as JSON; check `"ok": true` before claiming success.
@@ -103,3 +159,5 @@ lifeos schema
 - Prefer `plan` and `action` for daily execution; do not store daily todos only as facts.
 - Prefer `fact`, `profile`, and `asset` for durable memory that should affect future context.
 - If a command fails with auth errors, ask the user to run `lifeos login` or provide credentials for login.
+- If the user intent is ambiguous, ask one short clarifying question before writing.
+- If the CLI returns validation field errors, use the `fieldErrors` payload to ask only for the missing or invalid fields.
