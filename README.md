@@ -38,14 +38,9 @@ Copy the skill into your agent runtime's skills directory:
 
 ```bash
 git clone https://github.com/AI-dogg/lifeos-cli.git
-cp -R lifeos-cli/skills/lifeos-cli /path/to/your/skills/
-```
-
-For example, if your runtime reads skills from `~/.codex/skills`:
-
-```bash
-mkdir -p ~/.codex/skills
-cp -R lifeos-cli/skills/lifeos-cli ~/.codex/skills/
+export SKILLS_DIR="/path/to/your/skills"
+mkdir -p "$SKILLS_DIR"
+cp -R lifeos-cli/skills/lifeos-cli "$SKILLS_DIR/"
 ```
 
 ### 3. Register and verify
