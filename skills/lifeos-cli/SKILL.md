@@ -1,11 +1,11 @@
 ---
 name: lifeos-cli
-description: "Use when Codex should call the LifeOS CLI to persist or read LifeOS data: remember facts, save or confirm daily plans, list/update/complete actions, capture profile signals, add/list assets, get scores, diagnose the API, or fetch a user snapshot. Trigger when the user asks to record, remember, log, save, sync, inspect, or update LifeOS state through the `lifeos` command."
+description: "Use the LifeOS CLI as a personal growth passport for recording and retrieving a user's growth data: stable facts, daily plans, completed actions, profile signals, reusable assets, scores, snapshots, and other accumulated personal context. Trigger when the user wants to record, remember, log, save, sync, inspect, or update personal growth information through the `lifeos` command."
 ---
 
-# LifeOS CLI
+# LifeOS CLI Growth Passport
 
-Use the local `lifeos` command to write to and read from the hosted LifeOS API. The CLI defaults to `https://106.55.134.110/lifeos`.
+Use the local `lifeos` command to write to and read from the hosted LifeOS API. Treat LifeOS as the user's growth passport: a structured place to accumulate plans, actions, facts, profile signals, assets, and snapshots over time. The CLI defaults to `https://106.55.134.110/lifeos`.
 
 ## Setup Check
 
@@ -48,16 +48,16 @@ The default server currently uses a temporary self-signed HTTPS certificate, and
 
 ## Command Selection
 
-Use `lifeos fact add` for stable user facts and long-term memory:
+Use `lifeos fact add` for stable personal facts, growth milestones, and long-term memory:
 
 ```bash
-lifeos fact add --dimension work_output --statement "Published the LifeOS CLI."
+lifeos fact add --dimension work_output --statement "Published the first version of my growth passport CLI."
 ```
 
-Use `lifeos profile capture` for profile-shaping signals:
+Use `lifeos profile capture` for profile-shaping signals such as life stage, long-term goals, key decisions, milestones, and cognitive records:
 
 ```bash
-lifeos profile capture --dimension long_term_goal --statement "Build LifeOS into a durable personal operating system."
+lifeos profile capture --dimension long_term_goal --statement "Build a durable personal growth passport."
 ```
 
 Use plan commands for things the user intends to do on a date:
@@ -77,10 +77,10 @@ lifeos action update --action-id ACTION_ID --status pending
 lifeos action done --action-id ACTION_ID --text "Completed and verified."
 ```
 
-Use asset commands for outputs, methods, resources, and reusable artifacts:
+Use asset commands for outputs, methods, resources, and reusable growth artifacts:
 
 ```bash
-lifeos asset add --kind work_asset --title "LifeOS CLI" --summary "Open-source command line client for LifeOS."
+lifeos asset add --kind work_asset --title "Growth Passport CLI" --summary "A command line client for recording personal growth data."
 lifeos asset list
 lifeos assets backfill
 ```

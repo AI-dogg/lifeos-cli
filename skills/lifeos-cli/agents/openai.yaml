@@ -1,4 +1,4 @@
 interface:
-  display_name: "LifeOS CLI"
-  short_description: "Use the LifeOS command line memory API"
-  default_prompt: "Use $lifeos-cli to record my plan and actions with the LifeOS CLI."
+  display_name: "LifeOS Growth Passport"
+  short_description: "Record personal growth data with LifeOS"
+  default_prompt: "Use $lifeos-cli to record my plans, actions, and growth passport updates."

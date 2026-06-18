@@ -92,17 +92,18 @@ python3 -m pip install -e .
 lifeos schema
 ```
 
-## Codex Skill
+## AI Skill
 
-This repository includes a Codex skill at `skills/lifeos-cli`. It tells an AI
-agent when and how to use the `lifeos` command for facts, plans, actions,
-assets, profile signals, snapshots, and diagnostics.
+This repository includes a generic AI skill at `skills/lifeos-cli`. It tells an
+AI agent when and how to use the `lifeos` command as a personal growth passport
+for recording and retrieving facts, plans, actions, assets, profile signals,
+snapshots, and diagnostics.
 
-To install it locally for Codex:
+To install it for an agent runtime, copy the skill folder into that runtime's
+skills directory:
 
 ```bash
-mkdir -p ~/.codex/skills
-cp -R skills/lifeos-cli ~/.codex/skills/
+cp -R skills/lifeos-cli /path/to/your/skills/
 ```
 
 ## License
