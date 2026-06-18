@@ -1,6 +1,6 @@
 ---
 name: lifeos-cli
-description: "Use the LifeOS CLI as a personal growth passport for recording and retrieving a user's growth data: stable facts, daily plans, completed actions, profile signals, reusable assets, scores, snapshots, and other accumulated personal context. Trigger when the user wants to record, remember, log, save, sync, inspect, or update personal growth information through the `lifeos` command."
+description: "Use the LifeOS CLI as a personal growth passport for recording and retrieving a user's growth data: stable facts, daily plans, completed actions, profile signals, reusable assets, scores, snapshots, and accumulated personal context. Trigger when the user wants to record, remember, log, save, sync, inspect, or update growth information through `lifeos`. Also trigger after enough conversation has accumulated, before context compression, before session handoff, or before losing useful context: summarize durable growth signals from the conversation and persist them as facts, plans, completed actions, profile signals, or assets."
 ---
 
 # LifeOS CLI Growth Passport
@@ -18,6 +18,25 @@ Follow this order before running a write command:
 5. Run the CLI and inspect JSON output. Claim success only when `"ok": true`.
 
 If multiple `fieldErrors` appear, handle them in this priority: identity errors first, then missing command fields, then invalid formats. Ask one focused question at a time unless the user explicitly wants a form-style checklist.
+
+## Conversation Sedimentation
+
+When a conversation has accumulated meaningful personal context, summarize once and sediment durable growth information into LifeOS. Good moments include: before context compression, before ending a long session, before handing off to another agent, after a planning/review conversation, or after several concrete decisions/actions have appeared.
+
+Do not store the whole chat transcript. Extract only compact, durable items:
+
+- New long-term goals, life-stage changes, key decisions, milestones, and cognitive records.
+- Confirmed plans or action lists with dates.
+- Completed actions with evidence.
+- Reusable outputs, methods, resources, or lessons.
+- Stable preferences, constraints, relationships, habits, or important context that should help future assistance.
+
+Before writing:
+
+- Skip pure brainstorming, temporary drafts, jokes, and uncertain speculation.
+- Ask for confirmation before recording sensitive personal information.
+- If the user has explicitly asked the assistant to maintain their growth passport, non-sensitive summaries may be written proactively at natural checkpoints.
+- Use one concise command per durable item or a small grouped set; keep statements short and readable.
 
 ## Setup Check
 

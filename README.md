@@ -28,7 +28,7 @@ export PATH="$HOME/Library/Python/3.*/bin:$HOME/.local/bin:$PATH"
 
 ### 2. 安装 AI 助手 Skill
 
-Skill 会告诉 AI 助手：什么时候应该记录成长信息，什么时候只是讨论不该写入，以及缺少日期、行动、标题、账号时该怎么继续问。
+Skill 会告诉 AI 助手：什么时候应该记录成长信息，什么时候只是讨论不该写入，以及在对话积累到一定量、上下文压缩前、交接前，如何总结一次并沉淀进成长护照。
 
 把 Skill 复制到你的 AI 工具的 skills 目录：
 

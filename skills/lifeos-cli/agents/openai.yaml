@@ -1,4 +1,4 @@
 interface:
   display_name: "LifeOS Growth Passport"
-  short_description: "Record personal growth data with LifeOS"
-  default_prompt: "Use $lifeos-cli to record my plans, actions, and growth passport updates."
+  short_description: "Capture growth from conversations"
+  default_prompt: "Use $lifeos-cli to summarize this conversation and sediment durable growth passport updates."
