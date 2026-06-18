@@ -105,6 +105,7 @@ export LIFEOS_CLI_CONFIG="$HOME/.config/lifeos/cli.env"
 ```bash
 python3 -m pip install -e .
 lifeos schema
+python3 -m unittest discover -s tests -v
 ```
 
 ## License

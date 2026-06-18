@@ -34,7 +34,16 @@ _AUTHENTICATED_COMMANDS = {
     "action.done",
     "score.get",
 }
-HELP_TEXT = """LifeOS CLI
+HELP_TEXT = """LifeOS Growth Passport CLI
+
+Use `lifeos` to record and read a personal growth passport:
+plans, completed actions, stable facts, profile signals, reusable assets,
+scores, and snapshots. The CLI defaults to https://106.55.134.110/lifeos.
+
+Quick start:
+  lifeos register --name "你的名字" --password "你的密码"
+  lifeos diagnose
+  lifeos snapshot
 
 Usage:
   lifeos help
@@ -53,13 +62,21 @@ Usage:
   lifeos action update --action-id ACTION_ID --status pending
   lifeos action done --action-id ACTION_ID --text "完成证据"
   lifeos score get
-  lifeos fact add --dimension work_output --statement "发布了 LifeOS CLI 第一版"
-  lifeos asset add --kind work_asset --title "LifeOS CLI" --summary "通过 API 写入用户数据库"
+  lifeos fact add --dimension work_output --statement "发布了成长护照 CLI 第一版"
+  lifeos asset add --kind work_asset --title "成长护照 CLI" --summary "用于沉淀个人成长数据的命令行工具"
   lifeos asset list
-  lifeos profile capture --dimension life_stage --statement "2026 年主线是建设 LifeOS"
+  lifeos profile capture --dimension life_stage --statement "2026 年主线是建设个人成长护照"
   lifeos profile get
   lifeos assets backfill
   lifeos diagnose
+
+Command map:
+  plan              未来某天要做的计划；save 保存草稿，confirm 确认到行动层
+  action            已确认计划里的行动；list 查询，update 修改，done 记录完成证据
+  fact              稳定事实、成长里程碑、长期记忆
+  profile capture   人生阶段、长期目标、关键决定、里程碑、认知记录
+  asset             可复用成果、方法、资源、经验、关系沉淀
+  snapshot          读取当前成长护照快照
 
 Identity:
   LIFEOS_USER_ID       已有用户 id；设置后可省略 --user
@@ -73,23 +90,33 @@ API:
   LIFEOS_CLI_BASE_URL  你的云端 LifeOS API 地址；默认连接 https://106.55.134.110/lifeos
   LIFEOS_CLI_INSECURE_TLS  允许自签 HTTPS 证书；当前默认开启，建议正式域名证书上线后关闭
 
+Dimensions:
+  life_stage, long_term_goal, key_decision, milestone,
+  action_completion, sleep, exercise, diet,
+  cognitive_record, work_output, relationship_interaction
+
+Asset kinds:
+  cognitive_asset, method_asset, work_asset,
+  relationship_asset, experience_asset, resource_asset
+
 Examples:
   lifeos configure --base-url "https://lifeos.example.com" --name "Li"
   lifeos register --password "strong-password"
   lifeos login --password "strong-password"
-  lifeos plan save --action "09:00|打磨 CLI 计划层" --action "11:00|完成行动打卡"
-  lifeos plan confirm
-  lifeos action done --action-id ACTION_ID --text "已完成并验证 snapshot"
+  lifeos plan save --date 2026-06-18 --action "09:00|写今日计划" --action "11:00|复盘成长记录"
+  lifeos plan confirm --date 2026-06-18
+  lifeos action done --action-id ACTION_ID --text "已完成并验证结果"
   lifeos score get
-  lifeos fact add --dimension long_term_goal --statement "未来三年打造 LifeOS"
+  lifeos fact add --dimension long_term_goal --statement "未来三年持续建设个人成长系统"
+  lifeos asset add --kind method_asset --title "每日复盘流程" --summary "用于沉淀计划、行动和成长证据"
   lifeos snapshot
 
 Rules:
-  1. 计划层用 plan 命令：save 保存草稿，confirm 后进入行动层，history 查询历史计划单。
-  2. 行动层用 action 命令：list 查询，update 修改，done 提交行动结果。
-  3. action done 会写行动证据、触发八好记录，并在画像已初始化时触发七力 AI 评分。
-  4. score get 读取当前评分；profile get 读取画像；asset list 读取资产。
-  5. 长期事实仍用 fact/profile/asset；每天要执行的事情不要只写 fact，要写 plan/action。
+  1. 只是讨论、草稿或假设计划时不要写入；用户明确要记录/保存/沉淀时再写。
+  2. 每天要执行的事情用 plan/action，不要只写 fact。
+  3. 长期事实、画像信号和可复用成果分别用 fact/profile/asset。
+  4. action done 会写完成证据，并可能触发打卡/评分；只在用户确实完成行动时使用。
+  5. CLI 输出 JSON；只有 "ok": true 才算成功。失败时看 code、message、fieldErrors。
 """
 
 
