@@ -6,9 +6,9 @@ The CLI runs locally and calls the LifeOS API at
 `https://106.55.134.110/lifeos` by default. It stores local configuration in
 `~/.lifeos/cli.env` when you change settings or log in.
 
-## Install
+## Install CLI + Skill
 
-Install from GitHub:
+### 1. Install the CLI
 
 ```bash
 python3 -m pip install --user --upgrade \
@@ -28,7 +28,27 @@ If your shell cannot find `lifeos`, add your user bin directory to `PATH`:
 export PATH="$HOME/Library/Python/3.*/bin:$HOME/.local/bin:$PATH"
 ```
 
-## Quick Start
+### 2. Install the AI skill
+
+The skill tells an AI agent when and how to use `lifeos` as a personal growth
+passport for facts, plans, actions, assets, profile signals, snapshots, and
+diagnostics.
+
+Copy the skill into your agent runtime's skills directory:
+
+```bash
+git clone https://github.com/AI-dogg/lifeos-cli.git
+cp -R lifeos-cli/skills/lifeos-cli /path/to/your/skills/
+```
+
+For example, if your runtime reads skills from `~/.codex/skills`:
+
+```bash
+mkdir -p ~/.codex/skills
+cp -R lifeos-cli/skills/lifeos-cli ~/.codex/skills/
+```
+
+### 3. Register and verify
 
 After installation, the CLI already points at the current LifeOS server:
 
@@ -56,7 +76,7 @@ lifeos configure \
 ```bash
 lifeos diagnose
 lifeos snapshot
-lifeos fact add --dimension work_output --statement "Published the LifeOS CLI."
+lifeos fact add --dimension work_output --statement "Published my growth passport CLI."
 lifeos plan save --date 2026-06-18 --action "09:00|Write plan"
 lifeos plan confirm --date 2026-06-18
 lifeos action list --date 2026-06-18
@@ -90,20 +110,6 @@ export LIFEOS_CLI_CONFIG="$HOME/.config/lifeos/cli.env"
 ```bash
 python3 -m pip install -e .
 lifeos schema
-```
-
-## AI Skill
-
-This repository includes a generic AI skill at `skills/lifeos-cli`. It tells an
-AI agent when and how to use the `lifeos` command as a personal growth passport
-for recording and retrieving facts, plans, actions, assets, profile signals,
-snapshots, and diagnostics.
-
-To install it for an agent runtime, copy the skill folder into that runtime's
-skills directory:
-
-```bash
-cp -R skills/lifeos-cli /path/to/your/skills/
 ```
 
 ## License
