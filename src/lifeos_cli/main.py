@@ -13,7 +13,8 @@ from lifeos_cli.output import error_payload, exit_code, write_json
 from lifeos_cli.schema import CLI_SOURCE, EXIT_CODES, SCHEMA_VERSION, cli_schema
 
 
-DEFAULT_BASE_URL = ""
+DEFAULT_BASE_URL = "https://106.55.134.110/lifeos"
+DEFAULT_INSECURE_TLS = True
 _AUTHENTICATED_COMMANDS = {
     "snapshot",
     "fact.add",
@@ -69,12 +70,11 @@ Identity:
   ~/.lifeos/cli.env    安装后的持久配置文件
 
 API:
-  LIFEOS_CLI_BASE_URL  你的云端 LifeOS API 地址；首次使用前请先 configure
-  LIFEOS_CLI_INSECURE_TLS  允许自签 HTTPS 证书；只建议临时调试使用
+  LIFEOS_CLI_BASE_URL  你的云端 LifeOS API 地址；默认连接 https://106.55.134.110/lifeos
+  LIFEOS_CLI_INSECURE_TLS  允许自签 HTTPS 证书；当前默认开启，建议正式域名证书上线后关闭
 
 Examples:
   lifeos configure --base-url "https://lifeos.example.com" --name "Li"
-  lifeos configure --base-url "https://106.55.134.110/lifeos" --name "Li" --insecure
   lifeos register --password "strong-password"
   lifeos login --password "strong-password"
   lifeos plan save --action "09:00|打磨 CLI 计划层" --action "11:00|完成行动打卡"
@@ -691,7 +691,10 @@ def _api_client(namespace: argparse.Namespace) -> LifeOSCliHttpClient:
             _value(
                 namespace,
                 "insecure_tls",
-                default=_config_bool(("LIFEOS_CLI_INSECURE_TLS", "LIFEOS_CLI_INSECURE")),
+                default=_config_bool(
+                    ("LIFEOS_CLI_INSECURE_TLS", "LIFEOS_CLI_INSECURE"),
+                    DEFAULT_INSECURE_TLS,
+                ),
             )
         ),
     )

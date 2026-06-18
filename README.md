@@ -2,8 +2,9 @@
 
 Open-source command line client for LifeOS.
 
-The CLI runs locally and calls a remote LifeOS API. It stores local configuration in
-`~/.lifeos/cli.env` by default.
+The CLI runs locally and calls the LifeOS API at
+`https://106.55.134.110/lifeos` by default. It stores local configuration in
+`~/.lifeos/cli.env` when you change settings or log in.
 
 ## Install
 
@@ -27,25 +28,27 @@ If your shell cannot find `lifeos`, add your user bin directory to `PATH`:
 export PATH="$HOME/Library/Python/3.*/bin:$HOME/.local/bin:$PATH"
 ```
 
+## Quick Start
+
+After installation, the CLI already points at the current LifeOS server:
+
+```bash
+lifeos register --name "Your Name" --password "your-password"
+lifeos diagnose
+```
+
+The default server currently uses a temporary self-signed HTTPS certificate, so
+the CLI allows that certificate by default. Turn this off after you attach a real
+domain and certificate.
+
 ## Configure
 
-Point the CLI at your LifeOS API:
+Override the default server or account name:
 
 ```bash
 lifeos configure \
-  --base-url "https://106.55.134.110/lifeos" \
-  --name "Your Name" \
-  --insecure
-```
-
-`--insecure` allows a temporary self-signed HTTPS certificate. Remove it after
-you attach a real domain and certificate.
-
-Register or log in:
-
-```bash
-lifeos register --password "your-password"
-lifeos login --password "your-password"
+  --base-url "https://your-lifeos-api.example.com" \
+  --name "Your Name"
 ```
 
 ## Use
@@ -69,8 +72,8 @@ The CLI reads values from command arguments, environment variables, and
 Common values:
 
 ```bash
-LIFEOS_CLI_BASE_URL=https://your-lifeos-api.example.com
-LIFEOS_CLI_INSECURE_TLS=false
+LIFEOS_CLI_BASE_URL=https://106.55.134.110/lifeos
+LIFEOS_CLI_INSECURE_TLS=true
 LIFEOS_USER_ID=...
 LIFEOS_USER_TOKEN=...
 LIFEOS_USER_NAME=...
