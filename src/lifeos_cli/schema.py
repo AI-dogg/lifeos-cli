@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 SCHEMA_VERSION = "1.1.0"
-CLI_VERSION = "0.1.0"
+CLI_VERSION = "0.1.1"
 BACKEND_CONTRACT_VERSION = "0.1.0"
 CLI_SOURCE = "lifeos_cli"
 
@@ -49,6 +49,18 @@ ASSET_KIND_BACKING_DIMENSIONS = {
     "resource_asset": "cognitive_record",
 }
 ASSET_KINDS = frozenset(ASSET_KIND_BACKING_DIMENSIONS)
+ANSWER_FIELDS = (
+    "main_storyline",
+    "most_want_change",
+    "past_best_period",
+    "biggest_blocker",
+    "time_spent_distribution",
+    "long_term_energy_sources",
+    "one_year_ideal_state",
+    "no_constraint_life",
+    "easy_to_fall_into_patterns",
+    "one_habit_to_build",
+)
 
 
 def cli_schema() -> dict[str, Any]:
@@ -81,6 +93,7 @@ def cli_schema() -> dict[str, Any]:
             "actionLayer": True,
             "scoreRead": True,
             "profileRead": True,
+            "profileInit": True,
             "assetList": True,
             "insecureTls": True,
         },
@@ -126,6 +139,11 @@ def cli_schema() -> dict[str, Any]:
                 "profileWritePolicy": "fact_first",
             },
             "profile.get": {"reads": ["life_profiles"]},
+            "profile.init": {
+                "writes": ["life_profiles"],
+                "requires": list(ANSWER_FIELDS),
+                "note": "initializes the growth passport; profile.capture only writes objective profile facts",
+            },
             "snapshot": {},
             "assets.backfill": {},
             "diagnose": {},

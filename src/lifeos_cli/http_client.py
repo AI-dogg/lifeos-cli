@@ -114,6 +114,9 @@ class LifeOSCliHttpClient:
     def get_profile(self, user_id: str) -> dict[str, Any]:
         return self._request("GET", f"/api/v1/cli/profile?{urlencode({'user_id': user_id})}")
 
+    def init_profile(self, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("POST", "/api/v1/cli/profile/init", payload)
+
     def snapshot(self, user_id: str, params: dict[str, Any]) -> dict[str, Any]:
         normalized = dict(params)
         dimensions = normalized.get("dimensions")

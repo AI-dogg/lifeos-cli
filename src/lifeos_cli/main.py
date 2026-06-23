@@ -10,7 +10,7 @@ from typing import Any
 from lifeos_cli.errors import CliConfigError, CliValidationError
 from lifeos_cli.http_client import LifeOSCliHttpClient
 from lifeos_cli.output import error_payload, exit_code, write_json
-from lifeos_cli.schema import CLI_SOURCE, EXIT_CODES, SCHEMA_VERSION, cli_schema
+from lifeos_cli.schema import ANSWER_FIELDS, CLI_SOURCE, EXIT_CODES, SCHEMA_VERSION, cli_schema
 
 
 DEFAULT_BASE_URL = "https://106.55.134.110/lifeos"
@@ -22,6 +22,7 @@ _AUTHENTICATED_COMMANDS = {
     "asset.list",
     "profile.capture",
     "profile.get",
+    "profile.init",
     "assets.backfill",
     "plan.save",
     "plan.get",
@@ -41,6 +42,8 @@ HELP_TEXT = """LifeOS 成长护照
 
 第一次使用：
   lifeos register --name "你的名字" --password "你的密码"
+  lifeos login --name "你的名字" --password "你的密码"
+  lifeos profile init --input-json '{"mainStoryline":"把 LifeOS 做成长期成长护照", "...":"..."}'
   lifeos diagnose
 
 常用记录：
@@ -65,6 +68,9 @@ HELP_TEXT = """LifeOS 成长护照
   lifeos profile capture --dimension life_stage --statement "我正在从执行者转向产品负责人"
       记录人生阶段、关键决定、长期目标、认知变化
 
+  lifeos profile init --input-json '{"mainStoryline":"把 LifeOS 做成长期成长护照", "...":"..."}'
+      用 10 个答案初始化成长护照；初始化后才进入画像和七力评分流程
+
   lifeos asset add --kind method_asset --title "每日复盘流程" --summary "用于沉淀计划、行动和成长证据"
       记录可复用的成果、方法、资源或经验
 
@@ -80,10 +86,12 @@ HELP_TEXT = """LifeOS 成长护照
   换设备或登录信息丢失时，用：
     lifeos login --name "你的名字" --password "你的密码"
 
-提醒：
+  提醒：
   只是讨论、草稿、假设计划时不要记录。
   明确要记录、保存、沉淀时再写入成长护照。
   action done 表示真的完成了一个行动，不要随便使用。
+  profile capture 只沉淀事实，不初始化成长护照。
+  score get 读取当前评分；profile get 读取画像；asset list 读取资产。
   看到 ok: true 就表示记录成功。
 """
 
@@ -296,6 +304,13 @@ def build_parser() -> JsonArgumentParser:
     _add_common(profile_get)
     profile_get.add_argument("--user")
     profile_get.set_defaults(command="profile.get")
+    profile_init = profile_sub.add_parser("init", argument_default=argparse.SUPPRESS)
+    _add_common(profile_init)
+    profile_init.add_argument("--input-json", dest="input_json")
+    profile_init.add_argument("--user")
+    for field in ANSWER_FIELDS:
+        profile_init.add_argument(f"--{field.replace('_', '-')}", dest=field)
+    profile_init.set_defaults(command="profile.init")
 
     assets = sub.add_parser("assets", argument_default=argparse.SUPPRESS)
     assets_sub = assets.add_subparsers(dest="assets_command", required=True)
@@ -506,6 +521,17 @@ def _dispatch_http(
         return client.list_assets(str(effective.get("user", "")), effective.get("limit"))
     if command == "profile.get":
         return client.get_profile(str(effective.get("user", "")))
+    if command == "profile.init":
+        return client.init_profile(
+            {
+                "user_id": effective.get("user", ""),
+                "answers": _profile_answers_payload(effective),
+                "three_lives_summaries": {},
+                "actor": actor,
+                "effective_input": _public_effective_input(effective),
+                "input_sources": _public_input_sources(sources),
+            }
+        )
     if command == "assets.backfill":
         return client.backfill_assets(
             {
@@ -946,6 +972,8 @@ def _prevalidate_effective_input(
         "profile.get",
     }:
         required = []
+    elif command == "profile.init":
+        required = list(ANSWER_FIELDS)
     elif command == "plan.save":
         required = ["actions"]
     elif command in {"plan.draft.update", "action.update", "action.done"}:
@@ -1024,8 +1052,22 @@ def _normalize_key(value: str) -> str:
         "sourcePrompt": "source_prompt",
         "sessionId": "session_id",
         "actionId": "action_id",
+        "mainStoryline": "main_storyline",
+        "mostWantChange": "most_want_change",
+        "pastBestPeriod": "past_best_period",
+        "biggestBlocker": "biggest_blocker",
+        "timeSpentDistribution": "time_spent_distribution",
+        "longTermEnergySources": "long_term_energy_sources",
+        "oneYearIdealState": "one_year_ideal_state",
+        "noConstraintLife": "no_constraint_life",
+        "easyToFallIntoPatterns": "easy_to_fall_into_patterns",
+        "oneHabitToBuild": "one_habit_to_build",
     }
     return aliases.get(value, value.replace("-", "_"))
+
+
+def _profile_answers_payload(effective: dict[str, Any]) -> dict[str, str]:
+    return {field: str(effective.get(field) or "").strip() for field in ANSWER_FIELDS}
 
 
 def _plan_actions_payload(value: Any) -> list[dict[str, str]]:

@@ -1,0 +1,81 @@
+---
+name: lifeos_cli
+description: Use the LifeOS CLI to record a user's growth passport, including checking profile initialization, guiding missing initialization answers, writing plans/actions/facts/assets, and reading scores or profile state.
+---
+
+# LifeOS CLI Growth Passport
+
+LifeOS is a personal growth passport for recording objective facts, plans,
+actions, assets, scores, and evolving user profile context.
+
+## Initialization Gate
+
+Before any workflow that depends on profile, scoring, daily profile updates, or
+growth-passport interpretation, run:
+
+```bash
+lifeos profile get
+```
+
+If `life_profile_status` is not `initialized`, do not claim that scoring or
+profile updates are active. Tell the user they need to establish their growth
+passport first, then collect the 10 initialization answers.
+
+## Collect Initialization Answers
+
+Collect these fields in natural language. Ask 1-3 questions at a time, not a
+long form all at once.
+
+| field | ask for |
+| --- | --- |
+| `main_storyline` | 当前人生最重要的主线 |
+| `most_want_change` | 现在最想改变的事 |
+| `past_best_period` | 过去状态最好的一段时期 |
+| `biggest_blocker` | 当前最大的卡点 |
+| `time_spent_distribution` | 每天时间主要花在哪里 |
+| `long_term_energy_sources` | 什么事会长期给能量 |
+| `one_year_ideal_state` | 一年后希望变成什么状态 |
+| `no_constraint_life` | 没有限制时想过怎样的生活 |
+| `easy_to_fall_into_patterns` | 最容易陷入的负向状态 |
+| `one_habit_to_build` | 最想长期坚持的一件事 |
+
+When all 10 answers are available, initialize:
+
+```bash
+lifeos profile init --input-json '{
+  "mainStoryline": "...",
+  "mostWantChange": "...",
+  "pastBestPeriod": "...",
+  "biggestBlocker": "...",
+  "timeSpentDistribution": "...",
+  "longTermEnergySources": "...",
+  "oneYearIdealState": "...",
+  "noConstraintLife": "...",
+  "easyToFallIntoPatterns": "...",
+  "oneHabitToBuild": "..."
+}'
+```
+
+After initialization succeeds, continue the user's original workflow.
+
+## Common CLI Flow
+
+1. Register or login if needed:
+   `lifeos register --name "Name" --password "password"` or
+   `lifeos login --name "Name" --password "password"`.
+2. Check profile state with `lifeos profile get`.
+3. If uninitialized, collect answers and run `lifeos profile init`.
+4. Plan daily actions with `lifeos plan save`, then `lifeos plan confirm`.
+5. Complete actions with `lifeos action done`; this writes action evidence and
+   can trigger seven-power scoring after profile initialization.
+6. Read state with `lifeos score get`, `lifeos profile get`, `lifeos snapshot`,
+   or `lifeos asset list`.
+
+## Rules
+
+- Use `profile capture` only for profile-related facts; it does not initialize
+  the growth passport.
+- Do not fabricate answers. If a field is missing, ask the user.
+- Keep facts objective and based on user-provided information.
+- If a CLI command returns `validation_error`, explain the missing fields and
+  ask the next 1-3 questions needed to proceed.
