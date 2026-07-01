@@ -78,7 +78,7 @@ lifeos configure --base-url "https://example.com/lifeos" --name "User Name"
 - Use `plan save/confirm/get/history` for intended future work on a date.
 - Use `action done` only for a completed planned action with a known `action-id`; it writes action evidence as a projected fact and may trigger scoring.
 - Use `fact add` only when the user explicitly provides a dimension and wants an advanced fact write.
-- Use `profile capture` only for compatibility or explicit profile-signal writes; it does not initialize the passport.
+- Use `profile capture` only for compatibility or explicit profile-signal writes; it writes a profile-signal fact visible in the admin ledger and does not initialize the passport.
 - Use `asset add` only for explicit asset backfill or artifact creation; normal assets should come from facts.
 - Use `snapshot`, `profile get`, `score get`, and `asset list` for reads.
 

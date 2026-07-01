@@ -205,6 +205,15 @@ def cli_schema() -> dict[str, Any]:
                 "writes": ["facts"],
                 "doesNotWrite": ["life_profiles"],
                 "profileWritePolicy": "fact_first",
+                "factPayload": [
+                    "captureIntent",
+                    "evidence",
+                    "profileWritePolicy",
+                    "projectionTarget",
+                    "ruleProjection",
+                    "projectionRefresh",
+                ],
+                "adminLedger": ["sourceGroups", "projectionSummary", "evidenceSummary"],
             },
             "profile.get": {"reads": ["life_profiles"]},
             "profile.init": {
