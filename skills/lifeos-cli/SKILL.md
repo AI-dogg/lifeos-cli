@@ -80,7 +80,7 @@ lifeos configure --base-url "https://example.com/lifeos" --name "User Name"
 - Use `fact add` only when the user explicitly provides a dimension and wants an advanced fact write.
 - Use `profile capture` only for compatibility or explicit profile-signal writes; it writes a profile-signal fact visible in the admin ledger and does not initialize the passport.
 - Use `asset add` only for explicit asset backfill or artifact creation; inline backfill writes a backing fact visible in the admin ledger before creating the asset, while normal assets should come from facts.
-- Use `snapshot`, `profile get`, `score get`, and `asset list` for reads.
+- Use `snapshot` first for a compact LifeOS passport read-side view; use `profile get`, `score get`, and `asset list` only when you need those specific details.
 
 ## Profile Initialization
 

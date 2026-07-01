@@ -91,6 +91,10 @@ class CliTests(unittest.TestCase):
         self.assertIn("passportProjection", payload["commands"]["asset.add"]["returns"])
         self.assertIn("manualProjection", payload["commands"]["asset.add"]["returns"])
         self.assertIn("exchangeProjection", payload["commands"]["asset.add"]["returns"])
+        self.assertEqual(payload["commands"]["snapshot"]["passportRole"], "read-side LifeOS passport snapshot for agents")
+        self.assertIn("dimensions", payload["commands"]["snapshot"]["filters"])
+        self.assertIn("factGaps", payload["commands"]["snapshot"]["returns"])
+        self.assertIn("nextCursor", payload["commands"]["snapshot"]["returns"])
 
     def test_record_missing_text_validates_before_network(self) -> None:
         code, output = self.run_cli(

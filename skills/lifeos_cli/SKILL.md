@@ -48,7 +48,7 @@ If uninitialized, collect the 10 initialization answers and run `lifeos profile 
 3. Use `lifeos plan save/confirm/get/history` for future dated plans.
 4. Use `lifeos action done` for completed planned actions with an `action-id`; it writes a projected action fact.
 5. Use `lifeos fact add`, `lifeos profile capture`, and `lifeos asset add` only as advanced/compatibility commands; `profile capture` writes a profile-signal fact, and inline `asset add` writes a backing fact before creating the asset.
-6. Read with `lifeos snapshot`, `lifeos profile get`, `lifeos score get`, or `lifeos asset list`.
+6. Read with `lifeos snapshot` first for a compact LifeOS passport view; use `lifeos profile get`, `lifeos score get`, or `lifeos asset list` for focused detail.
 
 ## Rules
 
