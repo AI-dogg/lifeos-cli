@@ -105,7 +105,7 @@ class CliTests(unittest.TestCase):
             "fact",
             "add",
             "--statement",
-            "I learned how to test the growth passport CLI.",
+            "I learned how to test the LifeOS passport CLI.",
             "--name",
             "Tester",
             "--password",

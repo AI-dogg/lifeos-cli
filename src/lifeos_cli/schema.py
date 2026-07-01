@@ -205,7 +205,7 @@ def cli_schema() -> dict[str, Any]:
             "profile.init": {
                 "writes": ["life_profiles"],
                 "requires": list(ANSWER_FIELDS),
-                "note": "initializes the growth passport; profile.capture only writes objective profile facts",
+                "note": "initializes the LifeOS passport; profile.capture only writes objective profile facts",
             },
             "snapshot": {},
             "assets.backfill": {},

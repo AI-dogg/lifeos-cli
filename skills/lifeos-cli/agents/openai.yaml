@@ -1,4 +1,4 @@
 interface:
-  display_name: "LifeOS Growth Passport"
-  short_description: "Capture growth from conversations"
-  default_prompt: "Use $lifeos-cli to summarize this conversation and sediment durable growth passport updates."
+  display_name: "LifeOS Passport"
+  short_description: "Capture LifeOS facts from conversations"
+  default_prompt: "Use $lifeos-cli to summarize this conversation and sediment durable LifeOS passport updates."

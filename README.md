@@ -68,13 +68,13 @@ lifeos diagnose
 lifeos login --name "你的名字" --password "你的密码"
 ```
 
-### 4. 初始化成长护照
+### 4. 初始化 LifeOS 护照
 
-使用画像、七力评分、每日画像更新前，需要先初始化成长护照：
+使用画像、七力评分、每日画像更新前，需要先初始化 LifeOS 护照：
 
 ```bash
 lifeos profile init --input-json '{
-  "mainStoryline": "把 LifeOS 做成长期成长护照",
+  "mainStoryline": "把 LifeOS 做成长期人生护照",
   "mostWantChange": "让行动复盘和个人沉淀更稳定",
   "pastBestPeriod": "持续推进产品落地的时候",
   "biggestBlocker": "容易被短期事务打断",
@@ -118,7 +118,7 @@ lifeos help
 - 已经确认的行动：用 `action`
 - 精确指定事实维度：用 `fact add`
 - 画像线索兼容写入：用 `profile capture`
-- 首次建立成长护照：用 `profile init`
+- 首次建立 LifeOS 护照：用 `profile init`
 - 手动补录可复用成果和方法：用 `asset add`
 - 查看已有信息：用 `snapshot`
 

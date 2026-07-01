@@ -44,7 +44,7 @@ HELP_TEXT = """LifeOS CLI
   lifeos register --name "你的名字" --password "你的密码"
   lifeos login --name "你的名字" --password "你的密码"
   lifeos record --text "今天完成 LifeOS 架构设计"
-  lifeos profile init --input-json '{"mainStoryline":"把 LifeOS 做成长期成长护照", "...":"..."}'
+  lifeos profile init --input-json '{"mainStoryline":"把 LifeOS 做成长期人生护照", "...":"..."}'
   lifeos diagnose
 
 常用记录：
@@ -58,7 +58,7 @@ HELP_TEXT = """LifeOS CLI
       用 JSON 记录；命令行参数优先级高于 input-json
 
   lifeos snapshot
-      查看当前成长护照快照
+      查看当前 LifeOS 护照快照
 
   lifeos plan save --date 2026-06-18 --action "09:00|写今日计划" --action "11:00|复盘成长记录"
       保存某一天的计划
@@ -78,8 +78,8 @@ HELP_TEXT = """LifeOS CLI
   lifeos profile capture --dimension life_stage --statement "我正在从执行者转向产品负责人"
       兼容命令：内部仍走画像线索事实路径
 
-  lifeos profile init --input-json '{"mainStoryline":"把 LifeOS 做成长期成长护照", "...":"..."}'
-      用 10 个答案初始化成长护照；初始化后才进入画像和七力评分流程
+  lifeos profile init --input-json '{"mainStoryline":"把 LifeOS 做成长期人生护照", "...":"..."}'
+      用 10 个答案初始化 LifeOS 护照；初始化后才进入画像和七力评分流程
 
   lifeos asset add --kind method_asset --title "每日复盘流程" --summary "用于沉淀计划、行动和成长证据"
       高级资产补录；通常让 record 后的规则层自动沉淀资产
