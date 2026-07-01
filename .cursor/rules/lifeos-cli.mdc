@@ -48,7 +48,7 @@ When `record` succeeds, inspect `projectionRefresh` together with `fact`, `ruleP
 - Record durable context: `lifeos record --text "..."`
 - Save daily plan: `lifeos plan save --input-json '{...}'`
 - Confirm daily plan: `lifeos plan confirm`
-- Complete planned action: `lifeos action done --input-json '{...}'`
+- Complete planned action: `lifeos action done --input-json '{...}'` writes a projected action fact
 - Read snapshot: `lifeos snapshot`
 - Read profile: `lifeos profile get`
 - Read scores: `lifeos score get`
