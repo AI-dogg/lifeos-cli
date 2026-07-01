@@ -1,5 +1,5 @@
 ---
-description: Use the LifeOS CLI skill for growth passport, profile initialization, seven-power scoring, plans, actions, facts, assets, and profile state.
+description: Use the LifeOS CLI skill for LifeOS record, profile initialization, plans, actions, facts, assets, scores, snapshots, and profile state.
 globs:
   - "**/*"
 alwaysApply: true
@@ -7,97 +7,68 @@ alwaysApply: true
 
 # LifeOS CLI Skill
 
-This Cursor rule embeds the LifeOS CLI skill. When the user asks about personal
-growth, growth passport, profile, seven-power scores, daily plans, action
-records, facts, assets, reviews, or long-term personal context, follow this
-skill and use the local `lifeos` CLI as the source of truth.
+Use the local `lifeos` CLI as the source of truth for LifeOS operations.
 
-LifeOS is a personal growth passport for recording objective facts, plans,
-actions, assets, scores, and evolving user profile context.
+LifeOS core path:
 
-## Initialization Gate
-
-Before any workflow that depends on profile, scoring, daily profile updates, or
-growth-passport interpretation, run:
-
-```bash
-lifeos profile get
+```text
+Input -> Facts -> Rules -> Passport -> Manual / Exchange
 ```
 
-If `life_profile_status` is not `initialized`, do not claim that scoring or
-profile updates are active. Tell the user they need to establish their growth
-passport first, then collect the 10 initialization answers.
+## Default Write Path
 
-## Collect Initialization Answers
-
-Collect these fields in natural language. Ask 1-3 questions at a time, not a
-long form all at once.
-
-| field | ask for |
-| --- | --- |
-| `main_storyline` | 当前人生最重要的主线 |
-| `most_want_change` | 现在最想改变的事 |
-| `past_best_period` | 过去状态最好的一段时期 |
-| `biggest_blocker` | 当前最大的卡点 |
-| `time_spent_distribution` | 每天时间主要花在哪里 |
-| `long_term_energy_sources` | 什么事会长期给能量 |
-| `one_year_ideal_state` | 一年后希望变成什么状态 |
-| `no_constraint_life` | 没有限制时想过怎样的生活 |
-| `easy_to_fall_into_patterns` | 最容易陷入的负向状态 |
-| `one_habit_to_build` | 最想长期坚持的一件事 |
-
-When all 10 answers are available, initialize:
+For "记一下", "记录", "remember this", "log this", completed work, decisions, learning, reflections, relationship events, project progress, or durable conversation context, prefer:
 
 ```bash
-lifeos profile init --input-json '{
-  "mainStoryline": "...",
-  "mostWantChange": "...",
-  "pastBestPeriod": "...",
-  "biggestBlocker": "...",
-  "timeSpentDistribution": "...",
-  "longTermEnergySources": "...",
-  "oneYearIdealState": "...",
-  "noConstraintLife": "...",
-  "easyToFallIntoPatterns": "...",
-  "oneHabitToBuild": "..."
-}'
+lifeos record --text "..."
 ```
 
-After initialization succeeds, continue the user's original workflow.
+Useful options:
 
-## Common CLI Flow
+```bash
+lifeos record \
+  --text "..." \
+  --project LifeOS \
+  --person "Name" \
+  --tags "CLI,事实层" \
+  --evidence "..."
+```
 
-1. Register or login if needed:
-   `lifeos register --name "Name" --password "password"` or
-   `lifeos login --name "Name" --password "password"`.
-2. Check profile state with `lifeos profile get`.
-3. If uninitialized, collect answers and run `lifeos profile init`.
-4. Plan daily actions with `lifeos plan save`, then `lifeos plan confirm`.
-5. Complete actions with `lifeos action done`; this writes action evidence and
-   can trigger seven-power scoring after profile initialization.
-6. Read state with `lifeos score get`, `lifeos profile get`, `lifeos snapshot`,
-   or `lifeos asset list`.
+`record` supports `--text`, stdin, `--input-json`, `--type`, `--domain`, `--occurred-at`, `--source`, `--evidence`, `--project`, `--person`, `--tags`, and `--capture-raw`.
+
+If `record` returns `needs_more_detail`, ask for time, object, result, or evidence. Use `--capture-raw` only when the user explicitly wants to keep the raw fragment.
 
 ## Common Commands
 
 - Register: `lifeos register --name "Name" --password "password"`
 - Login: `lifeos login --name "Name" --password "password"`
-- Check profile: `lifeos profile get`
-- Initialize profile: `lifeos profile init --input-json '{...}'`
+- Configure: `lifeos configure --base-url "https://example.com/lifeos" --name "Name"`
+- Record durable context: `lifeos record --text "..."`
 - Save daily plan: `lifeos plan save --input-json '{...}'`
 - Confirm daily plan: `lifeos plan confirm`
-- Complete action: `lifeos action done --input-json '{...}'`
-- Add objective fact: `lifeos fact add --input-json '{...}'`
-- Capture profile fact only: `lifeos profile capture --input-json '{...}'`
-- Read scores: `lifeos score get`
+- Complete planned action: `lifeos action done --input-json '{...}'`
 - Read snapshot: `lifeos snapshot`
+- Read profile: `lifeos profile get`
+- Read scores: `lifeos score get`
+- Read assets: `lifeos asset list`
+
+Use `fact add`, `profile capture`, and `asset add` only for explicit advanced writes or compatibility. They are not the default recording path.
+
+## Profile Initialization
+
+Before profile/scoring-dependent workflows, run:
+
+```bash
+lifeos profile get
+```
+
+If uninitialized, collect the 10 initialization answers naturally, 1-3 questions at a time, then run `lifeos profile init --input-json '{...}'`.
 
 ## Rules
 
-- Use `profile capture` only for profile-related facts; it does not initialize
-  the growth passport.
-- Do not fabricate answers. If a field is missing, ask the user.
+- Treat CLI output as JSON; claim success only when `"ok": true`.
+- Do not fabricate facts or initialization answers.
 - Keep facts objective and based on user-provided information.
-- If a CLI command returns `validation_error`, explain the missing fields and
-  ask the next 1-3 questions needed to proceed.
-- Do not expose tokens, passwords, or local config contents in the conversation.
+- Ask before recording sensitive personal information.
+- Do not expose tokens, passwords, or local config contents.
+- Do not write to LifeOS when the user only asks for advice, a draft, or a hypothetical plan.

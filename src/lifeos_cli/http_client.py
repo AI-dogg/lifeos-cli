@@ -67,6 +67,9 @@ class LifeOSCliHttpClient:
     def add_fact(self, payload: dict[str, Any]) -> dict[str, Any]:
         return self._request("POST", "/api/v1/cli/facts", payload)
 
+    def record(self, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("POST", "/api/v1/cli/records", payload)
+
     def add_asset(self, payload: dict[str, Any]) -> dict[str, Any]:
         return self._request("POST", "/api/v1/cli/assets", payload)
 

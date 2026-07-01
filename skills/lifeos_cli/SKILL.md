@@ -1,81 +1,57 @@
 ---
 name: lifeos_cli
-description: Use the LifeOS CLI to record a user's growth passport, including checking profile initialization, guiding missing initialization answers, writing plans/actions/facts/assets, and reading scores or profile state.
+description: Use the LifeOS CLI to record and retrieve LifeOS data. Default write path is `lifeos record`; use precise legacy commands only when explicitly needed.
 ---
 
-# LifeOS CLI Growth Passport
+# LifeOS CLI
 
-LifeOS is a personal growth passport for recording objective facts, plans,
-actions, assets, scores, and evolving user profile context.
+LifeOS records the user's life through:
+
+```text
+Input -> Facts -> Rules -> Passport -> Manual / Exchange
+```
+
+## Default Recording
+
+For "remember this", "log this", "记一下", completed work, decisions, learning, reflections, relationship events, project progress, or durable context, use:
+
+```bash
+lifeos record --text "..."
+```
+
+Add context when known:
+
+```bash
+lifeos record --text "..." --project LifeOS --person "Name" --tags "CLI,事实层" --evidence "..."
+```
+
+`record` supports `--text`, stdin, `--input-json`, `--type`, `--domain`, `--occurred-at`, `--source`, `--evidence`, `--project`, `--person`, `--tags`, and `--capture-raw`.
+
+If `record` returns `needs_more_detail`, ask one focused follow-up. Use `--capture-raw` only when the user explicitly wants to preserve the raw fragment.
 
 ## Initialization Gate
 
-Before any workflow that depends on profile, scoring, daily profile updates, or
-growth-passport interpretation, run:
+Before profile/scoring-dependent workflows, run:
 
 ```bash
 lifeos profile get
 ```
 
-If `life_profile_status` is not `initialized`, do not claim that scoring or
-profile updates are active. Tell the user they need to establish their growth
-passport first, then collect the 10 initialization answers.
+If uninitialized, collect the 10 initialization answers and run `lifeos profile init --input-json '{...}'`.
 
-## Collect Initialization Answers
+## Command Selection
 
-Collect these fields in natural language. Ask 1-3 questions at a time, not a
-long form all at once.
-
-| field | ask for |
-| --- | --- |
-| `main_storyline` | 当前人生最重要的主线 |
-| `most_want_change` | 现在最想改变的事 |
-| `past_best_period` | 过去状态最好的一段时期 |
-| `biggest_blocker` | 当前最大的卡点 |
-| `time_spent_distribution` | 每天时间主要花在哪里 |
-| `long_term_energy_sources` | 什么事会长期给能量 |
-| `one_year_ideal_state` | 一年后希望变成什么状态 |
-| `no_constraint_life` | 没有限制时想过怎样的生活 |
-| `easy_to_fall_into_patterns` | 最容易陷入的负向状态 |
-| `one_habit_to_build` | 最想长期坚持的一件事 |
-
-When all 10 answers are available, initialize:
-
-```bash
-lifeos profile init --input-json '{
-  "mainStoryline": "...",
-  "mostWantChange": "...",
-  "pastBestPeriod": "...",
-  "biggestBlocker": "...",
-  "timeSpentDistribution": "...",
-  "longTermEnergySources": "...",
-  "oneYearIdealState": "...",
-  "noConstraintLife": "...",
-  "easyToFallIntoPatterns": "...",
-  "oneHabitToBuild": "..."
-}'
-```
-
-After initialization succeeds, continue the user's original workflow.
-
-## Common CLI Flow
-
-1. Register or login if needed:
-   `lifeos register --name "Name" --password "password"` or
-   `lifeos login --name "Name" --password "password"`.
-2. Check profile state with `lifeos profile get`.
-3. If uninitialized, collect answers and run `lifeos profile init`.
-4. Plan daily actions with `lifeos plan save`, then `lifeos plan confirm`.
-5. Complete actions with `lifeos action done`; this writes action evidence and
-   can trigger seven-power scoring after profile initialization.
-6. Read state with `lifeos score get`, `lifeos profile get`, `lifeos snapshot`,
-   or `lifeos asset list`.
+1. Register/login when identity is missing.
+2. Use `lifeos record` for general durable recording.
+3. Use `lifeos plan save/confirm/get/history` for future dated plans.
+4. Use `lifeos action done` for completed planned actions with an `action-id`.
+5. Use `lifeos fact add`, `lifeos profile capture`, and `lifeos asset add` only as advanced/compatibility commands.
+6. Read with `lifeos snapshot`, `lifeos profile get`, `lifeos score get`, or `lifeos asset list`.
 
 ## Rules
 
-- Use `profile capture` only for profile-related facts; it does not initialize
-  the growth passport.
-- Do not fabricate answers. If a field is missing, ask the user.
-- Keep facts objective and based on user-provided information.
-- If a CLI command returns `validation_error`, explain the missing fields and
-  ask the next 1-3 questions needed to proceed.
+- Do not fabricate answers or facts.
+- Keep facts objective and user-provided.
+- Ask before recording sensitive personal information.
+- Do not expose tokens, passwords, or local config contents.
+- Treat CLI output as JSON; claim success only when `"ok": true`.

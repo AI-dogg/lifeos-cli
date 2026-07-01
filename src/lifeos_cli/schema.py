@@ -17,7 +17,20 @@ EXIT_CODES = {
     "unexpected_error": 20,
 }
 
-EVENT_DIMENSIONS = frozenset({"action_completion", "sleep", "exercise", "diet"})
+EVENT_DIMENSIONS = frozenset(
+    {
+        "action_completion",
+        "sleep",
+        "exercise",
+        "diet",
+        "raw_capture",
+        "daily_action",
+        "reflection",
+        "learning",
+        "relationship_event",
+        "project_progress",
+    }
+)
 FACT_DIMENSIONS = frozenset(
     {
         "life_stage",
@@ -31,12 +44,31 @@ FACT_DIMENSIONS = frozenset(
         "cognitive_record",
         "work_output",
         "relationship_interaction",
+        "raw_capture",
+        "daily_action",
+        "decision",
+        "reflection",
+        "learning",
+        "relationship_event",
+        "project_progress",
     }
 )
 PROFILE_SIGNAL_DIMENSIONS = frozenset(
-    {"life_stage", "long_term_goal", "key_decision", "milestone", "cognitive_record"}
+    {
+        "life_stage",
+        "long_term_goal",
+        "key_decision",
+        "milestone",
+        "cognitive_record",
+        "decision",
+        "reflection",
+        "learning",
+        "project_progress",
+    }
 )
-AUTO_ASSET_DIMENSIONS = frozenset({"cognitive_record", "work_output"})
+AUTO_ASSET_DIMENSIONS = frozenset(
+    {"cognitive_record", "work_output", "learning", "reflection", "project_progress"}
+)
 OPTIONAL_ASSET_DIMENSIONS = frozenset(
     {"relationship_interaction", "milestone", "action_completion"}
 )
@@ -96,6 +128,9 @@ def cli_schema() -> dict[str, Any]:
             "profileInit": True,
             "assetList": True,
             "insecureTls": True,
+            "recordCommand": True,
+            "rawCapture": True,
+            "ruleProjection": True,
         },
         "compatibility": {
             "minor": "may add optional fields without changing existing semantics",
@@ -106,6 +141,23 @@ def cli_schema() -> dict[str, Any]:
             "fact.add": {
                 "dimensions": sorted(FACT_DIMENSIONS),
                 "eventDimensions": sorted(EVENT_DIMENSIONS),
+            },
+            "record": {
+                "writes": ["facts"],
+                "dimensions": sorted(FACT_DIMENSIONS),
+                "input": ["text", "stdin", "inputJson"],
+                "optionalFields": [
+                    "type",
+                    "domain",
+                    "occurredAt",
+                    "source",
+                    "evidence",
+                    "project",
+                    "person",
+                    "tags",
+                    "captureRaw",
+                ],
+                "ruleProjection": ["bahao", "powers", "asset", "passport", "manual", "exchange"],
             },
             "asset.add": {
                 "kinds": sorted(ASSET_KINDS),

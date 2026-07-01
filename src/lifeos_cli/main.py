@@ -17,6 +17,7 @@ DEFAULT_BASE_URL = "https://106.55.134.110/lifeos"
 DEFAULT_INSECURE_TLS = True
 _AUTHENTICATED_COMMANDS = {
     "snapshot",
+    "record",
     "fact.add",
     "asset.add",
     "asset.list",
@@ -35,18 +36,27 @@ _AUTHENTICATED_COMMANDS = {
     "action.done",
     "score.get",
 }
-HELP_TEXT = """LifeOS 成长护照
+HELP_TEXT = """LifeOS CLI
 
-把计划、行动、目标、复盘、成果和重要经历记录到你的个人成长护照里。
-你可以自己用命令记录，也可以让 AI 助手帮你记录。
+默认入口是 record：先把真实发生、决定、完成、学习、交流和反思写入事实层，再由规则层映射八好、七力、资产、画像和护照。
 
 第一次使用：
   lifeos register --name "你的名字" --password "你的密码"
   lifeos login --name "你的名字" --password "你的密码"
+  lifeos record --text "今天完成 LifeOS 架构设计"
   lifeos profile init --input-json '{"mainStoryline":"把 LifeOS 做成长期成长护照", "...":"..."}'
   lifeos diagnose
 
 常用记录：
+  lifeos record --text "今天完成 LifeOS 架构设计" --project LifeOS --tags 产品,架构
+      默认记录入口：写入事实层并返回规则标签、资产沉淀和护照投影状态
+
+  echo "今天和创业者交流 2 小时" | lifeos record --source agent_tool
+      从 stdin 记录一段已经发生的事实
+
+  lifeos record --input-json '{"text":"今天阅读《原则》40 分钟","type":"learning","evidence":"reading-log"}'
+      用 JSON 记录；命令行参数优先级高于 input-json
+
   lifeos snapshot
       查看当前成长护照快照
 
@@ -60,26 +70,27 @@ HELP_TEXT = """LifeOS 成长护照
       查看当天行动
 
   lifeos action done --action-id ACTION_ID --text "已完成并验证结果"
-      记录某个行动已经完成
+      记录某个行动已经完成，并进入统一 record/fact pipeline
 
   lifeos fact add --dimension long_term_goal --statement "未来三年持续建设个人成长系统"
-      记录长期目标、里程碑、重要事实
+      高级显式事实写入；只有明确要指定事实维度时使用
 
   lifeos profile capture --dimension life_stage --statement "我正在从执行者转向产品负责人"
-      记录人生阶段、关键决定、长期目标、认知变化
+      兼容命令：内部仍走画像线索事实路径
 
   lifeos profile init --input-json '{"mainStoryline":"把 LifeOS 做成长期成长护照", "...":"..."}'
       用 10 个答案初始化成长护照；初始化后才进入画像和七力评分流程
 
   lifeos asset add --kind method_asset --title "每日复盘流程" --summary "用于沉淀计划、行动和成长证据"
-      记录可复用的成果、方法、资源或经验
+      高级资产补录；通常让 record 后的规则层自动沉淀资产
 
 怎么选择：
+  明确要记录/记一下/log/remember/save context   用 record
   未来要做的事       用 plan
   已经确认的行动     用 action
-  长期事实和里程碑   用 fact
-  人生阶段和目标     用 profile
-  可复用成果和方法   用 asset
+  精确事实维度       用 fact add
+  画像线索兼容写入   用 profile capture
+  手动补录资产       用 asset add
   查看已有信息       用 snapshot
 
 账号：
@@ -87,10 +98,10 @@ HELP_TEXT = """LifeOS 成长护照
     lifeos login --name "你的名字" --password "你的密码"
 
   提醒：
-  只是讨论、草稿、假设计划时不要记录。
-  明确要记录、保存、沉淀时再写入成长护照。
+  低信息量内容会返回 needs_more_detail；先追问补充。
+  用户只是想保留原始片段时，用 lifeos record --capture-raw。
   action done 表示真的完成了一个行动，不要随便使用。
-  profile capture 只沉淀事实，不初始化成长护照。
+  fact add、profile capture、asset add 是高级/兼容命令，不是默认记录入口。
   score get 读取当前评分；profile get 读取画像；asset list 读取资产。
   看到 ok: true 就表示记录成功。
 """
@@ -176,6 +187,25 @@ def build_parser() -> JsonArgumentParser:
     snapshot.add_argument("--max-statement-length", dest="max_statement_length", type=int)
     snapshot.add_argument("--cursor")
     snapshot.set_defaults(command="snapshot")
+
+    record = sub.add_parser("record", argument_default=argparse.SUPPRESS)
+    _add_common(record)
+    record.add_argument("--input-json", dest="input_json")
+    record.add_argument("--dry-run", dest="dry_run", action="store_true")
+    record.add_argument("--user")
+    record.add_argument("--text")
+    record.add_argument("--type", dest="record_type")
+    record.add_argument("--domain")
+    record.add_argument("--source")
+    record.add_argument("--evidence")
+    record.add_argument("--project")
+    record.add_argument("--person")
+    record.add_argument("--tags", action="append")
+    record.add_argument("--payload")
+    record.add_argument("--occurred-at", dest="occurred_at")
+    record.add_argument("--idempotency-key", dest="idempotency_key")
+    record.add_argument("--capture-raw", dest="capture_raw", action="store_true")
+    record.set_defaults(command="record")
 
     plan = sub.add_parser("plan", argument_default=argparse.SUPPRESS)
     plan_sub = plan.add_subparsers(dest="plan_command", required=True)
@@ -370,6 +400,8 @@ def dispatch(namespace: argparse.Namespace) -> dict[str, Any] | str:
         return cli_schema()
 
     effective, sources = _effective_input(namespace)
+    if command == "record":
+        _apply_record_stdin(effective, sources)
     validation = _prevalidate_effective_input(command, effective, sources)
     if validation is not None:
         return validation
@@ -481,6 +513,28 @@ def _dispatch_http(
         )
     if command == "score.get":
         return client.get_scores(str(effective.get("user", "")))
+    if command == "record":
+        return client.record(
+            {
+                "user_id": effective.get("user", ""),
+                "text": effective.get("text", ""),
+                "type": effective.get("record_type") or effective.get("type"),
+                "domain": effective.get("domain"),
+                "source": effective.get("source"),
+                "evidence": effective.get("evidence"),
+                "project": effective.get("project"),
+                "person": effective.get("person"),
+                "tags": _tags_payload(effective.get("tags")),
+                "payload": _json_object(effective.get("payload")),
+                "occurred_at": effective.get("occurred_at"),
+                "idempotency_key": effective.get("idempotency_key"),
+                "capture_raw": bool(effective.get("capture_raw")),
+                "dry_run": bool(effective.get("dry_run")),
+                "actor": actor,
+                "effective_input": _public_effective_input(effective),
+                "input_sources": _public_input_sources(sources),
+            }
+        )
     if command in {"fact.add", "profile.capture"}:
         payload = {
             "user_id": effective.get("user", ""),
@@ -958,6 +1012,8 @@ def _prevalidate_effective_input(
     required: list[str] = []
     if command in {"fact.add", "profile.capture"}:
         required = ["dimension", "statement"]
+    elif command == "record":
+        required = ["text"]
     elif command in {
         "asset.add",
         "asset.list",
@@ -1022,6 +1078,18 @@ def _prevalidate_effective_input(
 
     if not field_errors:
         return None
+    if command == "record" and all(
+        item["field"] in {"user", "name", "user_token"} for item in field_errors
+    ):
+        payload = error_payload(
+            command=command,
+            code="config_error",
+            message='missing LifeOS user identity; run: lifeos login --name "Your Name" --password "Your Password"',
+            field_errors=field_errors,
+        )
+        payload["inputSources"] = _public_input_sources(sources)
+        payload["effectiveInput"] = _public_effective_input(effective)
+        return payload
     payload = error_payload(
         command=command,
         code="validation_error",
@@ -1052,6 +1120,8 @@ def _normalize_key(value: str) -> str:
         "sourcePrompt": "source_prompt",
         "sessionId": "session_id",
         "actionId": "action_id",
+        "recordType": "record_type",
+        "captureRaw": "capture_raw",
         "mainStoryline": "main_storyline",
         "mostWantChange": "most_want_change",
         "pastBestPeriod": "past_best_period",
@@ -1068,6 +1138,34 @@ def _normalize_key(value: str) -> str:
 
 def _profile_answers_payload(effective: dict[str, Any]) -> dict[str, str]:
     return {field: str(effective.get(field) or "").strip() for field in ANSWER_FIELDS}
+
+
+def _apply_record_stdin(effective: dict[str, Any], sources: dict[str, str]) -> None:
+    if str(effective.get("text") or "").strip():
+        return
+    try:
+        if hasattr(sys.stdin, "isatty") and sys.stdin.isatty():
+            return
+        text = sys.stdin.read()
+    except (OSError, RuntimeError):
+        return
+    if str(text or "").strip():
+        effective["text"] = str(text).strip()
+        sources["text"] = "stdin"
+
+
+def _tags_payload(value: Any) -> list[str]:
+    if value is None or value == "":
+        return []
+    raw_items = value if isinstance(value, list) else [value]
+    tags: list[str] = []
+    for raw in raw_items:
+        parts = raw if isinstance(raw, list) else str(raw).split(",")
+        for part in parts:
+            tag = str(part).strip()
+            if tag and tag not in tags:
+                tags.append(tag)
+    return tags[:20]
 
 
 def _plan_actions_payload(value: Any) -> list[dict[str, str]]:

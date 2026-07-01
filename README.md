@@ -1,8 +1,8 @@
-# LifeOS 成长护照 CLI
+# LifeOS CLI
 
-LifeOS CLI 是一个面向个人用户的成长护照记录工具。
+LifeOS CLI 是 LifeOS 的统一记录入口。
 
-它用于记录和查看你的计划、行动、目标、复盘、成果和重要经历。你可以自己用命令记录，也可以把配套 Skill 安装给 AI 助手，让 AI 帮你把成长信息沉淀进成长护照。
+它的默认主链路是 `输入 -> 事实 -> 规则 -> 护照 -> 手册 / 交换`。用户或 AI 助手明确说“记一下 / 记录 / log / remember / 保存上下文”时，优先用 `lifeos record` 先写入事实层，再由规则层映射八好、七力、资产、画像和护照投影。
 
 CLI 默认连接当前 LifeOS 服务器：
 
@@ -34,7 +34,7 @@ export PATH="$HOME/Library/Python/3.*/bin:$HOME/.local/bin:$PATH"
 
 ### 2. 安装 AI 助手 Skill
 
-Skill 会告诉 AI 助手：什么时候应该记录成长信息，什么时候只是讨论不该写入，以及在对话积累到一定量、上下文压缩前、交接前，如何总结一次并沉淀进成长护照。
+Skill 会告诉 AI 助手：什么时候应该调用 `lifeos record`，什么时候需要先追问补充细节，以及在对话积累到一定量、上下文压缩前、交接前，如何总结一次并沉淀进 LifeOS。
 
 把 Skill 复制到你的 AI 工具的 skills 目录：
 
@@ -57,6 +57,7 @@ Cursor 用户也可以把项目规则复制到目标项目：
 
 ```bash
 lifeos register --name "你的名字" --password "你的密码"
+lifeos record --text "今天完成 LifeOS 架构设计"
 lifeos profile get
 lifeos diagnose
 ```
@@ -91,14 +92,17 @@ lifeos profile init --input-json '{
 ## 常用方式
 
 ```bash
+lifeos record --text "今天完成 LifeOS 架构设计" --project LifeOS --tags 产品,架构
+echo "今天和创业者交流 2 小时" | lifeos record --source agent_tool
+lifeos record --input-json '{"text":"今天阅读《原则》40 分钟","type":"learning","evidence":"reading-log"}'
 lifeos snapshot
 lifeos plan save --date 2026-06-18 --action "09:00|写今日计划"
 lifeos plan confirm --date 2026-06-18
 lifeos action list --date 2026-06-18
 lifeos action done --action-id ACTION_ID --text "已完成并验证结果"
-lifeos fact add --dimension long_term_goal --statement "未来三年持续建设个人成长系统"
-lifeos profile capture --dimension life_stage --statement "我正在从执行者转向产品负责人"
-lifeos asset add --kind method_asset --title "每日复盘流程" --summary "用于沉淀计划、行动和成长证据"
+lifeos fact add --dimension long_term_goal --statement "未来三年持续建设个人成长系统"    # 高级显式事实
+lifeos profile capture --dimension life_stage --statement "我正在从执行者转向产品负责人" # 兼容画像线索
+lifeos asset add --kind method_asset --title "每日复盘流程" --summary "用于沉淀计划、行动和成长证据" # 高级资产补录
 ```
 
 查看帮助：
@@ -109,20 +113,20 @@ lifeos help
 
 ## 怎么选择
 
+- 明确要记录、记一下、log、remember、保存上下文：用 `record`
 - 未来要做的事：用 `plan`
 - 已经确认的行动：用 `action`
-- 长期事实和里程碑：用 `fact`
-- 人生阶段和目标：用 `profile capture`
+- 精确指定事实维度：用 `fact add`
+- 画像线索兼容写入：用 `profile capture`
 - 首次建立成长护照：用 `profile init`
-- 可复用成果和方法：用 `asset`
+- 手动补录可复用成果和方法：用 `asset add`
 - 查看已有信息：用 `snapshot`
 
 提醒：
 
-- 只是讨论、草稿、假设计划时不要记录。
-- 明确要记录、保存、沉淀时再写入成长护照。
+- `lifeos record` 是默认记录入口；`fact add`、`profile capture`、`asset add` 是高级/兼容命令。
+- 低信息量内容会返回 `needs_more_detail`；AI 助手应先追问。用户只是想保留原始片段时，用 `lifeos record --capture-raw`。
 - `action done` 表示真的完成了一个行动，不要随便使用。
-- `profile capture` 只沉淀事实，不初始化成长护照。
 - 看到 `ok: true` 就表示记录成功。
 
 ## 可选：更换服务地址
