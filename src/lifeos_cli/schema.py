@@ -196,7 +196,8 @@ def cli_schema() -> dict[str, Any]:
             "action.done": {
                 "writes": ["daily_plan_actions", "bahao_checkins", "fact_events"],
                 "scoring": "triggers seven-power AI scoring when life profile is initialized",
-                "factPayload": ["captureIntent", "ruleProjection", "projectionRefresh"],
+                "factPayload": ["captureIntent", "evidence", "ruleProjection", "projectionRefresh"],
+                "adminLedger": ["sourceGroups", "projectionSummary", "evidenceSummary"],
             },
             "score.get": {"reads": ["power_scores", "power_score_events"]},
             "profile.capture": {

@@ -77,7 +77,9 @@ class CliTests(unittest.TestCase):
         self.assertIn("evidence", payload["commands"]["record"]["factPayload"])
         self.assertIn("evidenceSummary", payload["commands"]["record"]["adminLedger"])
         self.assertIn("projectionRefresh", payload["commands"]["record"]["returns"])
+        self.assertIn("evidence", payload["commands"]["action.done"]["factPayload"])
         self.assertIn("projectionRefresh", payload["commands"]["action.done"]["factPayload"])
+        self.assertIn("evidenceSummary", payload["commands"]["action.done"]["adminLedger"])
 
     def test_record_missing_text_validates_before_network(self) -> None:
         code, output = self.run_cli(

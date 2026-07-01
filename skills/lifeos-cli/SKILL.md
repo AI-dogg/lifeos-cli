@@ -84,7 +84,7 @@ lifeos configure --base-url "https://example.com/lifeos" --name "User Name"
 
 ## Profile Initialization
 
-Before workflows that depend on profile, scoring, daily profile updates, or growth-passport interpretation, run:
+Before workflows that depend on profile, scoring, daily profile updates, or LifeOS passport interpretation, run:
 
 ```bash
 lifeos profile get
