@@ -131,6 +131,7 @@ def cli_schema() -> dict[str, Any]:
             "recordCommand": True,
             "rawCapture": True,
             "ruleProjection": True,
+            "projectionRefresh": True,
         },
         "compatibility": {
             "minor": "may add optional fields without changing existing semantics",
@@ -158,6 +159,15 @@ def cli_schema() -> dict[str, Any]:
                     "captureRaw",
                 ],
                 "ruleProjection": ["bahao", "powers", "asset", "passport", "manual", "exchange"],
+                "returns": [
+                    "fact",
+                    "ruleProjection",
+                    "assetPrecipitation",
+                    "projectionRefresh",
+                    "passportProjection",
+                    "manualProjection",
+                    "exchangeProjection",
+                ],
             },
             "asset.add": {
                 "kinds": sorted(ASSET_KINDS),

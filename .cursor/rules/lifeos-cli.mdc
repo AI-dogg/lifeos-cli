@@ -38,6 +38,8 @@ lifeos record \
 
 If `record` returns `needs_more_detail`, ask for time, object, result, or evidence. Use `--capture-raw` only when the user explicitly wants to keep the raw fragment.
 
+When `record` succeeds, inspect `projectionRefresh` together with `fact`, `ruleProjection`, and `assetPrecipitation` to see whether passport/manual/exchange projections refreshed or stayed as raw candidates.
+
 ## Common Commands
 
 - Register: `lifeos register --name "Name" --password "password"`

@@ -49,6 +49,8 @@ lifeos record \
 
 If the CLI returns `needs_more_detail`, ask one focused follow-up for time, object, result, or evidence. Use `--capture-raw` only when the user explicitly wants to keep the raw fragment despite low detail.
 
+On successful `record`, use `fact`, `ruleProjection`, `assetPrecipitation`, and `projectionRefresh` to understand what was written and which passport/manual/exchange projections refreshed. For raw capture, expect `projectionRefresh.status` to be `candidate`.
+
 ## Setup And Identity
 
 Before real operations, run:
