@@ -265,6 +265,7 @@ def cli_schema() -> dict[str, Any]:
                     "nextCursor",
                     "snapshotVersion",
                 ],
+                "factFields": ["projectionSummary", "evidenceSummary"],
             },
             "assets.backfill": {},
             "diagnose": {},
