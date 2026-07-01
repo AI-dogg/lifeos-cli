@@ -132,6 +132,8 @@ def cli_schema() -> dict[str, Any]:
             "rawCapture": True,
             "ruleProjection": True,
             "projectionRefresh": True,
+            "factEvidencePayload": True,
+            "adminLedgerEvidenceSummary": True,
         },
         "compatibility": {
             "minor": "may add optional fields without changing existing semantics",
@@ -159,6 +161,8 @@ def cli_schema() -> dict[str, Any]:
                     "captureRaw",
                 ],
                 "ruleProjection": ["bahao", "powers", "asset", "passport", "manual", "exchange"],
+                "factPayload": ["captureIntent", "evidence", "ruleProjection", "projectionRefresh"],
+                "adminLedger": ["sourceGroups", "projectionSummary", "evidenceSummary"],
                 "returns": [
                     "fact",
                     "ruleProjection",

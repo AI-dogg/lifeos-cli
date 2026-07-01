@@ -126,7 +126,7 @@ lifeos help
 
 - `lifeos record` 是默认记录入口；`fact add`、`profile capture`、`asset add` 是高级/兼容命令。
 - 低信息量内容会返回 `needs_more_detail`；AI 助手应先追问。用户只是想保留原始片段时，用 `lifeos record --capture-raw`。
-- 成功返回里重点看 `fact`、`ruleProjection`、`assetPrecipitation` 和 `projectionRefresh`；`projectionRefresh.status` 会说明护照/手册/交换投影是 `refreshed` 还是 raw 候选态。
+- 成功返回里重点看 `fact`、`ruleProjection`、`assetPrecipitation` 和 `projectionRefresh`；`projectionRefresh.status` 会说明护照/手册/交换投影是 `refreshed` 还是 raw 候选态。传入 `--evidence` 时，证据会保存在 fact payload，并在管理后台事实账本显示为 `evidenceSummary`。
 - `action done` 表示真的完成了一个行动，不要随便使用。
 - 看到 `ok: true` 就表示记录成功。
 

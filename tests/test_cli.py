@@ -71,7 +71,11 @@ class CliTests(unittest.TestCase):
         self.assertTrue(payload["capabilities"]["rawCapture"])
         self.assertTrue(payload["capabilities"]["ruleProjection"])
         self.assertTrue(payload["capabilities"]["projectionRefresh"])
+        self.assertTrue(payload["capabilities"]["factEvidencePayload"])
+        self.assertTrue(payload["capabilities"]["adminLedgerEvidenceSummary"])
         self.assertIn("record", payload["commands"])
+        self.assertIn("evidence", payload["commands"]["record"]["factPayload"])
+        self.assertIn("evidenceSummary", payload["commands"]["record"]["adminLedger"])
         self.assertIn("projectionRefresh", payload["commands"]["record"]["returns"])
         self.assertIn("projectionRefresh", payload["commands"]["action.done"]["factPayload"])
 
