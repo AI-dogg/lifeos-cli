@@ -47,7 +47,7 @@ If uninitialized, collect the 10 initialization answers and run `lifeos profile 
 2. Use `lifeos record` for general durable recording.
 3. Use `lifeos plan save/confirm/get/history` for future dated plans.
 4. Use `lifeos action done` for completed planned actions with an `action-id`; it writes a projected action fact.
-5. Use `lifeos fact add`, `lifeos profile capture`, and `lifeos asset add` only as advanced/compatibility commands; `profile capture` still writes a profile-signal fact visible in the admin ledger.
+5. Use `lifeos fact add`, `lifeos profile capture`, and `lifeos asset add` only as advanced/compatibility commands; `profile capture` writes a profile-signal fact, and inline `asset add` writes a backing fact before creating the asset.
 6. Read with `lifeos snapshot`, `lifeos profile get`, `lifeos score get`, or `lifeos asset list`.
 
 ## Rules

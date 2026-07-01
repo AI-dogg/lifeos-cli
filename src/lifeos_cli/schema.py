@@ -176,6 +176,19 @@ def cli_schema() -> dict[str, Any]:
             "asset.add": {
                 "kinds": sorted(ASSET_KINDS),
                 "backingDimensions": ASSET_KIND_BACKING_DIMENSIONS,
+                "writes": ["facts", "assets"],
+                "modes": ["inline_backing_fact", "fromFactId"],
+                "factPayload": [
+                    "captureIntent",
+                    "evidence",
+                    "assetKind",
+                    "assetTitle",
+                    "assetWritePolicy",
+                    "ruleProjection",
+                    "projectionRefresh",
+                ],
+                "adminLedger": ["sourceGroups", "projectionSummary", "evidenceSummary"],
+                "returns": ["fact", "asset", "assetPrecipitation", "projectionRefresh"],
             },
             "asset.list": {"filters": ["limit"]},
             "plan.save": {
