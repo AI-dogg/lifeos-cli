@@ -88,6 +88,9 @@ class CliTests(unittest.TestCase):
         self.assertIn("assetWritePolicy", payload["commands"]["asset.add"]["factPayload"])
         self.assertIn("evidenceSummary", payload["commands"]["asset.add"]["adminLedger"])
         self.assertIn("assetPrecipitation", payload["commands"]["asset.add"]["returns"])
+        self.assertIn("passportProjection", payload["commands"]["asset.add"]["returns"])
+        self.assertIn("manualProjection", payload["commands"]["asset.add"]["returns"])
+        self.assertIn("exchangeProjection", payload["commands"]["asset.add"]["returns"])
 
     def test_record_missing_text_validates_before_network(self) -> None:
         code, output = self.run_cli(

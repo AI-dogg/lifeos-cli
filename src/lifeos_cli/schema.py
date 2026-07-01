@@ -188,7 +188,15 @@ def cli_schema() -> dict[str, Any]:
                     "projectionRefresh",
                 ],
                 "adminLedger": ["sourceGroups", "projectionSummary", "evidenceSummary"],
-                "returns": ["fact", "asset", "assetPrecipitation", "projectionRefresh"],
+                "returns": [
+                    "fact",
+                    "asset",
+                    "assetPrecipitation",
+                    "projectionRefresh",
+                    "passportProjection",
+                    "manualProjection",
+                    "exchangeProjection",
+                ],
             },
             "asset.list": {"filters": ["limit"]},
             "plan.save": {
